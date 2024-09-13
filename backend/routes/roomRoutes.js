@@ -7,6 +7,7 @@ const upload = require("../middleware/multer_Middleware");
 
 router.post(
   "/postRoom",
+
   authMiddleware,
   upload.array("images"),
   async (req, res) => {
