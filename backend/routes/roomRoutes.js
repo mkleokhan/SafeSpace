@@ -17,13 +17,19 @@ router.post(
       const landlordId = req.user.id;
       console.log("landlord Id", landlordId);
       const room = req.body;
+      console.log("getting formdata: ", room.images);
       // console.log("room", room);
+
+      const images = Array.isArray(room.images)
+        ? room.images
+        : JSON.parse(room.images);
+
       const createRoom = await new Room({
         title: room.title,
         description: room.description,
         rentPerMonth: room.rentPerMonth,
         location: room.location,
-        images: imagePaths,
+        images: images,
         facilities: room.facilities,
         beds: room.beds,
         attachBathroom: room.attachBathroom,
@@ -31,7 +37,7 @@ router.post(
       }).populate({ path: "landlord", select: "name CNIC email phone" });
 
       await createRoom.save();
-      console.log("Created Room, ", createRoom);
+      // console.log("Created Room, ", createRoom);
       res
         .status(201)
         .json({ msg: "Room created successfully,", room: createRoom });
@@ -51,36 +57,55 @@ router.get("/allrooms", async (req, res) => {
 
 router.get("/allrooms/:id", async (req, res) => {
   const rooms = await Room.findById(req.params.id);
-  console.log(rooms);
-  res.send(rooms);
+  const populatedRoom = await rooms.populate({
+    path: "landlord",
+    select: "name  _id",
+  });
+  console.log(populatedRoom);
+  res.send(populatedRoom);
 });
 
 router.post("/booking", authMiddleware, async (req, res) => {
   try {
-    const { roomId, landlordId, checkIn, checkOut, rent, paymentStatus } =
-      req.body;
+    const { roomId, checkIn, checkOut, rent, paymentStatus } = req.body;
+    const tenantId = req.user.id; // Get the guest (user) ID from the auth middleware
+    console.log("tenant id in booking route", tenantId);
     const room = await Room.findById(roomId);
-    const guest = await Landlord.findById(landlordId);
-    if (!room || !landlordId) {
-      return res.status(404).json({ msg: "Room not Available" });
+    if (!room) {
+      return res.status(404).json({ msg: "Room not found" });
     }
+
+    const landlordId = room.landlord; // Get the landlord ID from the room
 
     const newBooking = new Booking({
       room: roomId,
-      landlord: landlordId,
+      tenantId: tenantId,
+      landlordId: landlordId, // Guest is the user making the booking
       checkIn,
       checkOut,
       rent,
       paymentStatus,
     });
 
-    await newBooking.save();
+    console.log("Booking request:", newBooking);
+    let populatedBooking = await newBooking.populate({
+      path: "landlordId",
+      select: "name address",
+    });
+
+    populatedBooking = await populatedBooking.populate({
+      path: "tenantId",
+      select: "name address",
+    });
+
+    console.log("populated booking : ", populatedBooking);
+    await populatedBooking.save();
     res
       .status(201)
-      .json({ msg: "Booking created successfully", booking: newBooking });
+      .json({ msg: "Booking created successfully", booking: populatedBooking });
   } catch (error) {
-    console.log("error booking the room", error);
-    return res.status(500).send("Internal server error");
+    console.error("Error booking the room:", error);
+    return res.status(500).json({ msg: "Internal server error" });
   }
 });
 

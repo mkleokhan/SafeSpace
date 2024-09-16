@@ -12,6 +12,9 @@ import SignUp from "./pages/SignUP";
 import SignIn from "./pages/SignIn";
 import PostRoom from "./pages/PostRoom";
 import ErrorPage from "./pages/ErrorPage";
+import ProtectedRoutes from "./comonents/ProtectedRoutes";
+import LandlordDashboard from "./pages/LandlordDashboard";
+import LandlordHome from "./pages/Landlord/LandlordHome";
 function App() {
   return (
     <>
@@ -86,7 +89,29 @@ function App() {
             path="/postroom"
             element={
               <MainLayout>
-                <PostRoom />
+                <ProtectedRoutes requiredRole="landlord">
+                  <PostRoom />
+                </ProtectedRoutes>
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/landlord/landlord-dashboard"
+            element={
+              <MainLayout>
+                <ProtectedRoutes requiredRole="landlord">
+                  <LandlordDashboard />
+                </ProtectedRoutes>
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/landlord/home"
+            element={
+              <MainLayout>
+                <ProtectedRoutes requiredRole="landlord">
+                  <LandlordHome />
+                </ProtectedRoutes>
               </MainLayout>
             }
           />

@@ -109,7 +109,8 @@ const SignupPage = () => {
             formData
           );
           console.log(response);
-          navigate("/landlord-signin");
+
+          navigate("/signin");
         } catch (error) {
           console.error("Error:", error);
         }
@@ -119,8 +120,9 @@ const SignupPage = () => {
             "http://localhost:5000/tenant/createUser",
             formData
           );
-          console.log(response);
-          navigate("/tenant-signin");
+          console.log(response.data);
+
+          navigate("/signin");
         } catch (error) {
           console.error("Error:", error);
         }

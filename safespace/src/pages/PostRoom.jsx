@@ -11,6 +11,7 @@ import {
   FormControlLabel,
 } from "@mui/material";
 import axios from "axios";
+import { v4 as uuidv4 } from "uuid";
 
 // Validation Schema using Yup
 const validationSchema = Yup.object({
@@ -29,12 +30,26 @@ const validationSchema = Yup.object({
     .required("Number of beds is required")
     .min(1, "At least one bed is required"),
   attachBathroom: Yup.boolean(),
-  images: Yup.mixed().required("At least one image is required"),
+  images: Yup.array().required("At least one image is required"),
 });
 
 const PostRoom = () => {
-  const [imageFiles, setImageFiles] = useState(null);
+  const [imageFiles, setImageFiles] = useState([]);
   const token = localStorage.getItem("token");
+
+  const uploadImageToFirebase = async (imageFile) => {
+    try {
+      const uniqueFileName = `${uuidv4()}-${imageFile.name}`;
+      const storageRef = ref(storage, `images/${uniqueFileName}`);
+      await uploadBytes(storageRef, imageFile);
+      const downloadURL = await getDownloadURL(storageRef);
+      console.log("Download URL:", downloadURL); // Check URL here
+      return downloadURL;
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      throw error;
+    }
+  };
 
   const formik = useFormik({
     initialValues: {
@@ -46,7 +61,7 @@ const PostRoom = () => {
         city: "",
         zipCode: "",
       },
-      images: null,
+      images: [],
       facilities: "",
       beds: "",
       attachBathroom: false,
@@ -66,19 +81,24 @@ const PostRoom = () => {
 
       // Upload images to Firebase and get their URLs
       const imageUrls = [];
-      if (imageFiles) {
+      if (imageFiles.length > 0) {
         for (let i = 0; i < imageFiles.length; i++) {
-          const storageRef = ref(storage, `images/${imageFiles[i].name}`);
-          const snapshot = await uploadBytes(storageRef, imageFiles[i]);
-          const downloadURL = await getDownloadURL(snapshot.ref);
-          imageUrls.push(downloadURL); // Store the image URL in the array
+          try {
+            const downloadURL = await uploadImageToFirebase(imageFiles[i]);
+            imageUrls.push(downloadURL); // Store the image URL in the array
+          } catch (error) {
+            console.error("Failed to upload one or more images.");
+          }
         }
       }
 
+      console.log("Image URLs:", imageUrls); // Log URLs before appending
+
       // Append image URLs to formData
-      formData.append("imageUrls", JSON.stringify(imageUrls));
+      formData.append("images", JSON.stringify(imageUrls));
 
       try {
+        console.log("Form Data after appending the urls...", formData);
         const response = await axios.post(
           "http://localhost:5000/rooms/postroom",
           formData,
@@ -99,8 +119,8 @@ const PostRoom = () => {
   const handleFileChange = (event) => {
     const files = event.target.files;
     if (files) {
-      setImageFiles(files);
-      formik.setFieldValue("images", files);
+      setImageFiles(Array.from(files)); // Convert FileList to Array
+      formik.setFieldValue("images", Array.from(files)); // Update Formik's image field
     }
   };
 

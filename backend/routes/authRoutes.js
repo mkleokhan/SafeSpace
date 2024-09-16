@@ -28,7 +28,7 @@ router.post("/landlord", async (req, res) => {
         );
 
         console.log(token);
-        return res.status(200).send(token);
+        return res.status(200).json({ token, landlord });
       } else {
         console.log("Email or Password is incorrect");
         return res.status(400).send("Email or Password is incorrect");
@@ -55,9 +55,10 @@ router.post("/tenant", async (req, res) => {
       if (isPassword) {
         const token = jwt.sign(
           {
+            id: tenant._id,
             email: tenant.email,
             name: tenant.name,
-            password: tenant.name,
+            password: tenant.password,
           },
           SECRET_KEY
         );

@@ -6,7 +6,7 @@ const authMiddleware = (req, res, next) => {
   try {
     const verified = jwt.verify(token, SECRET_KEY);
     if (verified) {
-      // console.log("verified user", verified);
+      console.log("verified user", verified);
       req.user = verified;
       next();
     }

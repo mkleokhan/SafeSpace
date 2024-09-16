@@ -1,15 +1,19 @@
 import React, { useState } from "react";
-import { TextField, Button, Container } from "@mui/material";
+import {
+  TextField,
+  Button,
+  Container,
+  Dialog,
+  DialogActions,
+  DialogContent,
+  DialogTitle,
+} from "@mui/material";
 import * as Yup from "yup";
 import { useDispatch, useSelector } from "react-redux";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
-import {
-  setToken,
-  setRole,
-  setErrors,
-  setLandlordData,
-} from "../../Redux/authSlice"; // Import setLandlordData
+import { setToken, setRole, setErrors } from "../../Redux/authSlice"; // Adjust import path as needed
+import BookingModal from "./BookingModal";
 
 // Validation schema for sign-in
 const validationSchema = Yup.object({
@@ -21,14 +25,10 @@ const validationSchema = Yup.object({
     .required("Password is required"),
 });
 
-const SigninPage = () => {
+const SignInModal = ({ open, onClose }) => {
   const dispatch = useDispatch();
   const navigate = useNavigate();
-  const {
-    errors: reduxErrors,
-    isLandlord,
-    isTenant,
-  } = useSelector((state) => state.auth);
+  const { errors: reduxErrors, isTenant } = useSelector((state) => state.auth);
 
   const [formData, setFormData] = useState({
     email: "",
@@ -60,65 +60,31 @@ const SigninPage = () => {
     if (Object.keys(formErrors).length === 0) {
       try {
         const response = await axios.post(
-          isLandlord
-            ? "http://localhost:5000/auth/landlord"
-            : "http://localhost:5000/auth/tenant",
+          "http://localhost:5000/auth/tenant", // Only the tenant endpoint
           formData
         );
 
-        console.log("RESPONSE", response);
-        // console.log(response.data);
+        console.log(response.data);
         // If login is successful, dispatch token and role
-        dispatch(setToken(response.data.token)); // Assuming token is in response.data.token
-        dispatch(setRole(isLandlord ? "landlord" : "tenant"));
-
-        if (isLandlord) {
-          dispatch(setLandlordData(response.data.landlord)); // Assuming landlordData is in response.data.landlordData
-        }
-
+        dispatch(setToken(response.data));
+        dispatch(setRole("tenant"));
         localStorage.setItem("token", response.data);
+        <BookingModal />;
 
-        // Navigate to appropriate page after login
-        navigate(isLandlord ? "/landlord/home" : "/");
+        onClose(); // Close the modal after successful login
       } catch (error) {
         console.error("Error during login:", error);
       }
     }
   };
 
-  const toggleTenantLandlord = (role) => {
-    dispatch(setRole(role));
-  };
-
   return (
-    <div className="bg-gray-100 min-h-screen flex items-center justify-center">
-      <Container
-        component="main"
-        maxWidth="sm"
-        className="p-6 bg-white rounded-lg shadow-md"
-      >
-        <h1 className="text-2xl font-bold mb-4 text-center">Sign In as</h1>
-        <center>
-          <h1 className="font-bold">
-            Please select whether your are Tenant or Landlord
-          </h1>
-        </center>
-        <div className="flex justify-center space-x-4 mt-4">
-          <Button
-            variant={isLandlord ? "contained" : "outlined"}
-            onClick={() => toggleTenantLandlord("landlord")}
-          >
-            Landlord
-          </Button>
-          <Button
-            variant={isTenant ? "contained" : "outlined"}
-            onClick={() => toggleTenantLandlord("tenant")}
-          >
-            Tenant
-          </Button>
-        </div>
-        {(isTenant || isLandlord) && (
-          <form onSubmit={handleSubmit} className="mt-4">
+    <Dialog open={open} onClose={onClose} fullWidth maxWidth="sm">
+      <DialogTitle>Sign In</DialogTitle>
+      <DialogContent>
+        <div className="flex flex-col items-center">
+          <h1 className="text-lg font-bold mb-4">Sign In as Tenant</h1>
+          <form onSubmit={handleSubmit} className="w-full">
             <div className="mb-4">
               <TextField
                 name="email"
@@ -144,20 +110,19 @@ const SigninPage = () => {
                 helperText={reduxErrors.password}
               />
             </div>
-            <Button
-              type="submit"
-              variant="contained"
-              color="primary"
-              fullWidth
-              className="mt-4"
-            >
+            <Button type="submit" variant="contained" color="primary" fullWidth>
               Sign In
             </Button>
           </form>
-        )}
-      </Container>
-    </div>
+        </div>
+      </DialogContent>
+      <DialogActions>
+        <Button onClick={onClose} color="secondary">
+          Cancel
+        </Button>
+      </DialogActions>
+    </Dialog>
   );
 };
 
-export default SigninPage;
+export default SignInModal;

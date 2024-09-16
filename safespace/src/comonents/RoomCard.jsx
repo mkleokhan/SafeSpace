@@ -1,8 +1,8 @@
+import React from "react";
 import { Carousel } from "react-responsive-carousel";
 import "react-responsive-carousel/lib/styles/carousel.min.css"; // Carousel styles
-import { Button } from "@mui/material";
+import { Button, IconButton } from "@mui/material";
 import FavoriteIcon from "@mui/icons-material/Favorite";
-import { IconButton } from "@mui/material";
 
 const RoomCard = ({
   title,
@@ -16,16 +16,10 @@ const RoomCard = ({
   images,
   clickHandler,
 }) => {
+  console.log("images in card", images); // Log images to verify URLs
+
   return (
-    <div
-      className="p-4 border rounded-lg shadow-md transition-transform duration-300 ease-in-out md:hover:scale-105"
-      onMouseOver={(e) => {
-        e.currentTarget.style.cursor = "pointer"; // Change cursor to pointer on hover
-      }}
-      onMouseOut={(e) => {
-        e.currentTarget.style.cursor = "pointer"; // Change cursor to pointer on hover
-      }}
-    >
+    <div className="p-4 border rounded-lg shadow-md transition-transform duration-300 ease-in-out md:hover:scale-105">
       <h2 className="text-xl font-bold mb-2" onClick={clickHandler}>
         {title}
       </h2>
@@ -54,26 +48,26 @@ const RoomCard = ({
           className="w-full" // Make sure the carousel takes the full width of its container
         >
           {images.map((image, index) => (
-            <div key={index} className="w-full h-auto" onClick={clickHandler}>
+            <div key={index} className="w-full h-auto">
               <img
                 src={image}
                 alt={`Room ${index + 1}`}
-                className="w-full h-auto object-cover" // Responsive image
+                className="w-full h-auto object-contained "
               />
             </div>
           ))}
         </Carousel>
       </div>
       <Button
-        style={{ marginTop: "16px" }} // Equivalent to mt-4
+        style={{ marginTop: "16px" }}
         variant="contained"
         color="primary"
         onClick={clickHandler}
       >
-        Rent
+        Book
       </Button>
       <Button
-        style={{ marginTop: "16px", marginLeft: "16px" }} // Equivalent to mt-4
+        style={{ marginTop: "16px", marginLeft: "16px" }}
         variant="contained"
         color="primary"
         onClick={clickHandler}
@@ -85,7 +79,7 @@ const RoomCard = ({
         color="primary"
         onClick={clickHandler}
       >
-        <FavoriteIcon /> {/* Icon for adding to favorites */}
+        <FavoriteIcon />
       </IconButton>
     </div>
   );

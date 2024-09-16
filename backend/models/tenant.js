@@ -8,4 +8,4 @@ const tenantSchema = new mongoose.Schema({
   password: String,
 });
 
-module.exports = mongoose.model("Tenants", tenantSchema);
+module.exports = mongoose.model("Tenant", tenantSchema);

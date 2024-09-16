@@ -2,11 +2,16 @@ import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { Menu, MenuItem, IconButton } from "@mui/material";
 import AccountCircleIcon from "@mui/icons-material/AccountCircle";
+import { useDispatch, useSelector } from "react-redux";
+import { clearAuth } from "../../Redux/authSlice"; // Adjust import path as needed
 
 const Navbar = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [anchorEl, setAnchorEl] = useState(null);
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+
+  const { token, isLandlord, isTenant } = useSelector((state) => state.auth);
 
   // Toggle mobile menu
   const toggleMenu = () => {
@@ -21,6 +26,12 @@ const Navbar = () => {
   // Close dropdown menu
   const handleMenuClose = () => {
     setAnchorEl(null);
+  };
+
+  const handleLogout = () => {
+    dispatch(clearAuth());
+    handleMenuClose();
+    navigate("/"); // Redirect to home or login page
   };
 
   return (
@@ -73,20 +84,24 @@ const Navbar = () => {
                 onClose={handleMenuClose}
                 className="absolute right-0 mt-2"
               >
-                <MenuItem
-                  onClick={() => {
-                    navigate("/signin");
-                  }}
-                >
-                  Sign In
-                </MenuItem>
-                <MenuItem
-                  onClick={() => {
-                    navigate("/signup");
-                  }}
-                >
-                  Sign Up
-                </MenuItem>
+                {token ? ( // Only show the logout option if token exists
+                  <div>
+                    <MenuItem onClick={handleLogout}>Logout</MenuItem>
+                    <MenuItem onClick={handleMenuClose}>
+                      {isLandlord && "Role: Landlord"}
+                      {isTenant && "Role: Tenant"}
+                    </MenuItem>
+                  </div>
+                ) : (
+                  <div>
+                    <MenuItem onClick={() => navigate("/signin")}>
+                      Sign In
+                    </MenuItem>
+                    <MenuItem onClick={() => navigate("/signup")}>
+                      Sign Up
+                    </MenuItem>
+                  </div>
+                )}
               </Menu>
             </div>
             {/* Mobile Menu Button */}
