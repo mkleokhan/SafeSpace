@@ -109,7 +109,7 @@ router.post("/booking", authMiddleware, async (req, res) => {
   }
 });
 
-router.get("/allbookings", authMiddleware, async (req, res) => {
+router.get("/landlord/bookings", authMiddleware, async (req, res) => {
   try {
     const landlordId = req.user.id; // Assuming user is authenticated and landlord ID is in req.user
     console.log(landlordId);
@@ -121,6 +121,21 @@ router.get("/allbookings", authMiddleware, async (req, res) => {
   } catch (error) {
     console.log("Error Fetching Bookings:", error);
     res.status(500).json({ error: "Failed to fetch bookings" });
+  }
+});
+
+router.get("/tenant/bookings", authMiddleware, async (req, res) => {
+  try {
+    const tenantId = req.user.id; // Assuming tenant ID is in req.user
+    const bookings = await Booking.find({ tenantId }).populate(
+      "room landlordId"
+    );
+
+    console.log(bookings);
+    res.status(200).json({ bookings });
+  } catch (error) {
+    console.log("Error Fetching Tenant's Bookings:", error);
+    res.status(500).json({ error: "Failed to fetch tenant bookings" });
   }
 });
 

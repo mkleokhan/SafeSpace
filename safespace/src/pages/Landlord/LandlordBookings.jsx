@@ -14,7 +14,7 @@ const LandlordBookings = () => {
     const fetchBookings = async () => {
       try {
         const response = await axios.get(
-          "http://localhost:5000/rooms/allbookings",
+          "http://localhost:5000/rooms/landlord/bookings",
           {
             headers: {
               "x-auth-token": token,

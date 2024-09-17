@@ -30,6 +30,9 @@ const RoomDetails = () => {
 
   // Get today's date in YYYY-MM-DD format
   const today = new Date().toISOString().split("T")[0];
+  const token = useSelector((state) => {
+    return state.auth.token;
+  });
 
   // Fetch room details
   const fetchSpecificRoom = async () => {
@@ -133,7 +136,7 @@ const RoomDetails = () => {
         },
         {
           headers: {
-            "x-auth-token": localStorage.getItem("token"), // Include user token for authorization
+            "x-auth-token": token, // Include user token for authorization
           },
         }
       );

@@ -13,7 +13,7 @@ const SideNav = () => {
     return state.auth.landlordData;
   });
 
-  const dashboardUrl = landlord ? "/landlord/home" : "/tenant/home";
+  const dashboardUrl = landlord ? "/landlord/home" : "/tenant/bookings";
   const bookingsUrl = landlord ? "/landlord/bookings" : "/tenant/bookings";
   const inboxUrl = landlord ? "/landlord/inbox" : "/tenant/inbox";
   const settingsUrl = landlord ? "/landlord/settings" : "/tenant/settings";
@@ -43,7 +43,7 @@ const SideNav = () => {
           </div>
         </div>
 
-        <ul className={`pt-6 mt-4 ${isOpen ? "block" : "hidden"}`}>
+        <ul className={`pt-6 mt-4 ${isOpen ? "block" : "hidden"} `}>
           <Link to={dashboardUrl}>
             <li className="text-gray-300 text-sm flex items-center gap-x-4 p-2 hover:bg-gray-700 rounded-md cursor-pointer">
               <i className="fas fa-home"></i>
