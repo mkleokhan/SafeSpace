@@ -9,6 +9,7 @@ import {
   setRole,
   setErrors,
   setLandlordData,
+  setTenantData,
 } from "../../Redux/authSlice"; // Import setLandlordData
 
 // Validation schema for sign-in
@@ -74,6 +75,8 @@ const SigninPage = () => {
 
         if (isLandlord) {
           dispatch(setLandlordData(response.data.landlord)); // Assuming landlordData is in response.data.landlordData
+        } else {
+          dispatch(setTenantData(response.data.tenant));
         }
 
         localStorage.setItem("token", response.data);

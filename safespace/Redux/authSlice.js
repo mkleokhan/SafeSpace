@@ -7,7 +7,8 @@ const authSlice = createSlice({
     user: null,
     isLandlord: false,
     isTenant: false,
-    landlordData: null, // Ensure this is included in the initial state
+    landlordData: null, // Store landlord-specific data
+    tenantData: null, // Store tenant-specific data
     errors: {},
   },
   reducers: {
@@ -29,7 +30,10 @@ const authSlice = createSlice({
       }
     },
     setLandlordData: (state, action) => {
-      state.landlordData = action.payload; // Update the landlordData in the state
+      state.landlordData = action.payload; // Update landlordData in the state
+    },
+    setTenantData: (state, action) => {
+      state.tenantData = action.payload; // Update tenantData in the state
     },
     setErrors: (state, action) => {
       state.errors = action.payload;
@@ -39,7 +43,8 @@ const authSlice = createSlice({
       state.user = null;
       state.isLandlord = false;
       state.isTenant = false;
-      state.landlordData = null; // Clear landlordData when logging out
+      state.landlordData = null; // Clear landlordData
+      state.tenantData = null; // Clear tenantData
       localStorage.removeItem("token");
     },
   },
@@ -50,6 +55,7 @@ export const {
   setUser,
   setRole,
   setLandlordData,
+  setTenantData, // Export this action to update tenantData
   setErrors,
   clearAuth,
 } = authSlice.actions;
