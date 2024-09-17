@@ -1,8 +1,12 @@
 import { Button } from "@mui/material";
 import React, { useState } from "react";
-
+import { Link } from "react-router-dom";
+import { clearAuth } from "../../Redux/authSlice";
+import { useDispatch } from "react-redux";
 const SideNav = () => {
   const [isOpen, setIsOpen] = useState(true);
+
+  const dispatch = useDispatch();
 
   const toggleSidebar = () => {
     setIsOpen(!isOpen);
@@ -28,26 +32,42 @@ const SideNav = () => {
         </div>
 
         <ul className={`pt-6 mt-4 ${isOpen ? "block" : "hidden"}`}>
-          <li className="text-gray-300 text-sm flex items-center gap-x-4 p-2 hover:bg-gray-700 rounded-md cursor-pointer">
-            <i className="fas fa-home"></i>
-            <span>Dashboard</span>
-          </li>
-          <li className="text-gray-300 text-sm flex items-center gap-x-4 p-2 hover:bg-gray-700 rounded-md cursor-pointer">
-            <i className="fas fa-user"></i>
-            <span>User</span>
-          </li>
-          <li className="text-gray-300 text-sm flex items-center gap-x-4 p-2 hover:bg-gray-700 rounded-md cursor-pointer">
-            <i className="fas fa-envelope"></i>
-            <span>Messages</span>
-          </li>
-          <li className="text-gray-300 text-sm flex items-center gap-x-4 p-2 hover:bg-gray-700 rounded-md cursor-pointer">
-            <i className="fas fa-chart-line"></i>
-            <span>Analytics</span>
-          </li>
-          <li className="text-gray-300 text-sm flex items-center gap-x-4 p-2 hover:bg-gray-700 rounded-md cursor-pointer">
-            <i className="fas fa-cog"></i>
-            <span>Settings</span>
-          </li>
+          <Link to="/landlord/home">
+            <li className="text-gray-300 text-sm flex items-center gap-x-4 p-2 hover:bg-gray-700 rounded-md cursor-pointer">
+              <i className="fas fa-home"></i>
+              <span>Dashboard</span>
+            </li>
+          </Link>
+          <Link to="/landlord/bookings">
+            <li className="text-gray-300 text-sm flex items-center gap-x-4 p-2 hover:bg-gray-700 rounded-md cursor-pointer">
+              <i className="fas fa-envelope"></i>
+              <span>Bookings</span>
+            </li>
+          </Link>
+
+          <Link to="/landlord/inbox">
+            <li className="text-gray-300 text-sm flex items-center gap-x-4 p-2 hover:bg-gray-700 rounded-md cursor-pointer">
+              <i className="fas fa-envelope"></i>
+              <span>Messages</span>
+            </li>
+          </Link>
+
+          <Link to="/landlord/settings">
+            <li className="text-gray-300 text-sm flex items-center gap-x-4 p-2 hover:bg-gray-700 rounded-md cursor-pointer">
+              <i className="fas fa-cog"></i>
+              <span>Settings</span>
+            </li>
+          </Link>
+          <Button
+            onClick={() => {
+              dispatch(clearAuth());
+            }}
+          >
+            <li className="text-red-500 text-sm flex items-center gap-x-4 p-2 hover:bg-gray-700 rounded-md cursor-pointer">
+              <i className="fas fa-cog"></i>
+              <span>Log Out</span>
+            </li>
+          </Button>
         </ul>
       </div>
 
@@ -63,12 +83,6 @@ const SideNav = () => {
           {isOpen ? "<" : ">"}
         </i>
       </button>
-
-      {/* Main Content */}
-      <div className="flex-1 p-7">
-        <h1 className="text-2xl font-semibold">Responsive Sidebar Menu</h1>
-        <p className="mt-4">This is the main content area.</p>
-      </div>
     </div>
   );
 };

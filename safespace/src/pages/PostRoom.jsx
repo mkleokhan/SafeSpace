@@ -12,6 +12,7 @@ import {
 } from "@mui/material";
 import axios from "axios";
 import { v4 as uuidv4 } from "uuid";
+import { useSelector } from "react-redux";
 
 // Validation Schema using Yup
 const validationSchema = Yup.object({
@@ -35,7 +36,7 @@ const validationSchema = Yup.object({
 
 const PostRoom = () => {
   const [imageFiles, setImageFiles] = useState([]);
-  const token = localStorage.getItem("token");
+  const token = useSelector((state) => state.auth.token);
 
   const uploadImageToFirebase = async (imageFile) => {
     try {

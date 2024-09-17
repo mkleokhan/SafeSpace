@@ -109,4 +109,19 @@ router.post("/booking", authMiddleware, async (req, res) => {
   }
 });
 
+router.get("/allbookings", authMiddleware, async (req, res) => {
+  try {
+    const landlordId = req.user.id; // Assuming user is authenticated and landlord ID is in req.user
+    console.log(landlordId);
+    const bookings = await Booking.find({ landlordId }).populate(
+      "room tenantId"
+    );
+    console.log("bookings found", bookings);
+    res.status(200).json({ bookings });
+  } catch (error) {
+    console.log("Error Fetching Bookings:", error);
+    res.status(500).json({ error: "Failed to fetch bookings" });
+  }
+});
+
 module.exports = router;

@@ -15,6 +15,7 @@ import ErrorPage from "./pages/ErrorPage";
 import ProtectedRoutes from "./comonents/ProtectedRoutes";
 import LandlordDashboard from "./pages/LandlordDashboard";
 import LandlordHome from "./pages/Landlord/LandlordHome";
+import LandlordBookings from "./pages/Landlord/LandlordBookings";
 function App() {
   return (
     <>
@@ -86,7 +87,7 @@ function App() {
             }
           />
           <Route
-            path="/postroom"
+            path="landlord/postroom"
             element={
               <MainLayout>
                 <ProtectedRoutes requiredRole="landlord">
@@ -106,11 +107,21 @@ function App() {
             }
           />
           <Route
-            path="/landlord/home"
+            path="landlord/home"
             element={
               <MainLayout>
                 <ProtectedRoutes requiredRole="landlord">
                   <LandlordHome />
+                </ProtectedRoutes>
+              </MainLayout>
+            }
+          />
+          <Route
+            path="landlord/bookings"
+            element={
+              <MainLayout>
+                <ProtectedRoutes requiredRole="landlord">
+                  <LandlordBookings />
                 </ProtectedRoutes>
               </MainLayout>
             }
