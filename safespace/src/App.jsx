@@ -16,6 +16,11 @@ import ProtectedRoutes from "./comonents/ProtectedRoutes";
 import LandlordDashboard from "./pages/LandlordDashboard";
 import LandlordHome from "./pages/Landlord/LandlordHome";
 import LandlordBookings from "./pages/Landlord/LandlordBookings";
+import LandLordInbox from "./pages/Landlord/LandlordInbox";
+import LandlordSettings from "./pages/Landlord/LandlordSettings";
+import TenantInbox from "./pages/Tenant/TenantInbox";
+import TenantSettings from "./pages/Tenant/TenantSettings.jsx";
+import TenantBookings from "./pages/Tenant/TenantBookings";
 function App() {
   return (
     <>
@@ -87,6 +92,37 @@ function App() {
             }
           />
           <Route
+            path="/tenant/inbox"
+            element={
+              <MainLayout>
+                <ProtectedRoutes requiredRole="tenant">
+                  <TenantInbox />
+                </ProtectedRoutes>
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/tenant/settings"
+            element={
+              <MainLayout>
+                <ProtectedRoutes requiredRole="tenant">
+                  <TenantSettings />
+                </ProtectedRoutes>
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/tenant/bookings"
+            element={
+              <MainLayout>
+                <ProtectedRoutes requiredRole="tenant">
+                  <TenantBookings />
+                </ProtectedRoutes>
+              </MainLayout>
+            }
+          />
+
+          <Route
             path="landlord/postroom"
             element={
               <MainLayout>
@@ -107,6 +143,26 @@ function App() {
             }
           />
           <Route
+            path="/landlord/inbox"
+            element={
+              <MainLayout>
+                <ProtectedRoutes requiredRole="landlord">
+                  <LandLordInbox />
+                </ProtectedRoutes>
+              </MainLayout>
+            }
+          />
+          <Route
+            path="/landlord/settings"
+            element={
+              <MainLayout>
+                <ProtectedRoutes requiredRole="landlord">
+                  <LandlordSettings />
+                </ProtectedRoutes>
+              </MainLayout>
+            }
+          />
+          <Route
             path="landlord/home"
             element={
               <MainLayout>
@@ -116,6 +172,7 @@ function App() {
               </MainLayout>
             }
           />
+
           <Route
             path="landlord/bookings"
             element={

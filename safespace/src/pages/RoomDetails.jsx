@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
+import { useSelector } from "react-redux";
 import axios from "axios";
 import {
   Button,
@@ -24,6 +25,8 @@ const RoomDetails = () => {
     checkOut: "",
     paymentStatus: "Pending",
   }); // Booking form data state
+
+  const landlord = useSelector((state) => state.auth.landlordData);
 
   // Get today's date in YYYY-MM-DD format
   const today = new Date().toISOString().split("T")[0];
@@ -186,13 +189,19 @@ const RoomDetails = () => {
           <p className="text-gray-600 mb-2">Beds: {room.beds}</p>
           <p className="text-gray-600 mb-4">Landlord: {room.landlord.name}</p>
 
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={handleOpenBookingModal}
-          >
-            Book Now
-          </Button>
+          {landlord ? (
+            <></>
+          ) : (
+            <>
+              <Button
+                variant="contained"
+                color="primary"
+                onClick={handleOpenBookingModal}
+              >
+                Book Now
+              </Button>
+            </>
+          )}
         </div>
       </div>
 
