@@ -3,8 +3,6 @@ import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import RoomCard from "../comonents/RoomCard"; // Assuming RoomCard component is already built
-import SideNav from "../comonents/SideNav";
-import AllRooms from "../comonents/AllRooms";
 
 const Home = () => {
   const [rooms, setRooms] = useState([]);
@@ -53,28 +51,36 @@ const Home = () => {
 
   return (
     <>
-      <div className="flex">
-        {/* Conditional Sidebar for Tenants */}
-        {tenant && <SideNav />}
+      <input
+        type="text"
+        placeholder="Search for rooms..."
+        onChange={hanldeSearch}
+        className="w-full mt-8 px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+      />
 
-        {/* Main Content */}
-        <div className="flex-1 px-28 py-6">
-          {/* Conditionally render welcome message if the user is a tenant */}
-          {tenant && tenant.name ? (
-            <>
-              {" "}
-              <h1 className="font-bold text-3xl">Welcome {tenant.name}</h1>
-            </>
-          ) : (
-            <h1 className="font-bold text-3xl">Welcome to SafeSpace</h1>
-          )}
+      {/* Loading and Error Handling */}
+      {loading && <p>Loading rooms...</p>}
+      {error && <p className="error">{error}</p>}
 
-          {/* Loading and Error Handling */}
-          {loading && <p>Loading rooms...</p>}
-          {error && <p className="error">{error}</p>}
-
-          <AllRooms />
-        </div>
+      {/* Room Cards Grid */}
+      <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 mt-8">
+        {searchResults.map((room) => (
+          <RoomCard
+            key={room._id}
+            title={room.title}
+            description={room.description}
+            location={room.location.address}
+            city={room.location.city}
+            zipCode={room.location.zipCode}
+            rent={room.rentPerMonth}
+            beds={room.beds}
+            landlord={room.landlord.name}
+            images={room.images}
+            clickHandler={() => {
+              navigate(`/room-details/${room._id}`);
+            }}
+          />
+        ))}{" "}
       </div>
     </>
   );

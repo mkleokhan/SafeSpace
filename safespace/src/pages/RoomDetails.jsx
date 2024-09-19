@@ -2,6 +2,7 @@ import { useState, useEffect } from "react";
 import { useParams } from "react-router-dom";
 import { useSelector } from "react-redux";
 import axios from "axios";
+import AllRooms from "../comonents/AllRooms";
 import {
   Button,
   Dialog,
@@ -158,7 +159,12 @@ const RoomDetails = () => {
     fetchSpecificRoom();
   }, [roomId]);
 
-  if (!room) return <div>Loading...</div>; // Loading state
+  if (!room)
+    return (
+      <div>
+        <center>Loading...</center>
+      </div>
+    ); // Loading state
 
   return (
     <div className="p-4 max-w-6xl mx-auto">
@@ -183,14 +189,18 @@ const RoomDetails = () => {
           <h1 className="text-2xl font-bold mb-2">{room.title}</h1>
           <p className="text-gray-700 mb-4">{room.description}</p>
           <p className="text-gray-600 mb-2">
-            Location: {room.location.address}, {room.location.city},{" "}
+            <b> Location:</b> {room.location.address}, {room.location.city},{" "}
             {room.location.zipCode}
           </p>
           <p className="text-gray-600 mb-2">
-            Rent per Month: ${room.rentPerMonth}
+            <b>Rent per Month:</b> ${room.rentPerMonth}
           </p>
-          <p className="text-gray-600 mb-2">Beds: {room.beds}</p>
-          <p className="text-gray-600 mb-4">Landlord: {room.landlord.name}</p>
+          <p className="text-gray-600 mb-2">
+            <b>Beds:</b> {room.beds}
+          </p>
+          <p className="text-gray-600 mb-4">
+            <b>Landlord:</b> {room.landlord.name}
+          </p>
 
           {landlord ? (
             <></>
@@ -252,6 +262,11 @@ const RoomDetails = () => {
 
       {/* Sign-in modal */}
       <SignInModal open={openSignInModal} onClose={handleCloseSignInModal} />
+
+      <center>
+        <h1 className="font-bold text-3xl mt-8">Other Rooms</h1>
+      </center>
+      <AllRooms />
     </div>
   );
 };
