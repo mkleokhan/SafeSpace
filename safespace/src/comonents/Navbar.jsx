@@ -49,12 +49,28 @@ const Navbar = () => {
           <div className="flex-1 flex items-center justify-end">
             {/* Desktop Menu */}
             <div className="hidden sm:flex sm:space-x-4">
-              <Link
-                to="/"
-                className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
-              >
-                Home
-              </Link>
+              {isLandlord ? (
+                <>
+                  {" "}
+                  <Link
+                    to="/landlord/home"
+                    className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Landlord Dashboard
+                  </Link>
+                </>
+              ) : (
+                <>
+                  {" "}
+                  <Link
+                    to="/"
+                    className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"
+                  >
+                    Home
+                  </Link>
+                </>
+              )}
+
               <Link
                 to="/About"
                 className="text-gray-300 hover:bg-gray-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium"

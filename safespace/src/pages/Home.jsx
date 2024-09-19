@@ -66,7 +66,9 @@ const Home = () => {
               <h1 className="font-bold text-3xl">Welcome {tenant.name}</h1>
             </>
           ) : (
-            <h1 className="font-bold text-3xl">Welcome to SafeSpace</h1>
+            <h1 className="font-bold text-3xl">
+              Welcome to SafeSpace - Where Comfort Meets Security!
+            </h1>
           )}
 
           {/* Loading and Error Handling */}
